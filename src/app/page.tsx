@@ -59,11 +59,11 @@ export default function Home() {
 
               :<div className={'flex flex-wrap gap-20'}>
                {currentCategories==='All' && products && products?.map((item: IProduct, index: number) => {
-                  return <ProductCard key={item.id} name={item.title} imageURL={item.image} price={item.price}/>
+                  return <ProductCard key={item.id} name={item.title} imageURL={item.image} price={item.price} id={item.id}/>
               })}
 
                   {categoryProduct && categoryProduct?.map((item: IProduct, index: number) => {
-                      return <ProductCard key={item.id} name={item.title} imageURL={item.image} price={item.price}/>
+                      return <ProductCard key={item.id} name={item.title} imageURL={item.image} price={item.price} id={item.id}/>
                   })}
           </div>
 
