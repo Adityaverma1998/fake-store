@@ -1,11 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
 import app from '@/redux/app/appSlice'
+import categories from "@/redux/product-categories/productsCategoriesSlice"
 import {useDispatch} from "react-redux";
 import {RootState} from "@reduxjs/toolkit/query";
 
 export const store = configureStore({
     reducer:{
-        app
+        app,
+        categories
     }
 
 });

@@ -30,6 +30,9 @@ interface IAppInitialState {
     products: IProduct[] | undefined;
     productLoading: boolean;
     productErrors: {} | undefined;
+    product: IProduct | undefined;
+    productByIDLoading: boolean;
+    productsErrors: {} | undefined;
 
 }
 
@@ -37,6 +40,10 @@ const initialState: IAppInitialState = {
     products: undefined,
     productErrors: undefined,
     productLoading: false,
+    product:  undefined,
+    productByIDLoading: false,
+    productsErrors:  undefined,
+
 }
 
 
