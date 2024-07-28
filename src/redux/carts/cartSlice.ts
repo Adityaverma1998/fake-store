@@ -4,21 +4,21 @@ import {http, thunkHandler} from "@/redux/api.serivces";
 import {AppDispatch,RootState} from "@/redux/store";
 import axios from "axios";
 import {IProduct} from "@/interface/products";
-import {IResponseAddToCart} from "@/interface/cart";
+import {ICartItems, IResponseAddToCart} from "@/interface/cart";
 
 
 interface AsyncThunkConfig {
     rejectValue: string;
 }
 export const addToCart = createAsyncThunk('carts', async (params:any,thunkAPI) => {
-    const response = await http("").post(`/cart`,params);
+    const response = await http("").post(`/carts`,params);
     /*${chatEndPoint}hr/initCreateJobPost*/
     console.log('API Response:', response.data);
     return thunkHandler(response, thunkAPI);
 });
 
-export const getCart = createAsyncThunk('category-product', async (name:string,thunkAPI) => {
-    const response = await http("").get(`/carts/user/2'`);
+export const getCart = createAsyncThunk('get-carts', async (_,thunkAPI) => {
+    const response = await http("").get(`/carts/user/1`);
     /*${chatEndPoint}hr/initCreateJobPost*/
     console.log('API Response:', response.data);
     return thunkHandler(response, thunkAPI);
@@ -31,9 +31,10 @@ interface IAppInitialState {
     responseAddCart: IResponseAddToCart | undefined;
     responseAddCartLoading: boolean;
     responseAddCartErrors: {} | undefined;
-    categoryProduct: IProduct[] | undefined;
-    categoryProductLoading: boolean;
-    categoryProductErrors: {} | undefined;
+    carts: ICartItems[] | undefined;
+    cartsLoading: boolean;
+    cartsErrors: {} | undefined;
+    totalCartItems:number;
 
 
 }
@@ -42,9 +43,10 @@ const initialState: IAppInitialState = {
     responseAddCart: undefined,
     responseAddCartErrors: undefined,
     responseAddCartLoading: false,
-    categoryProduct: undefined,
-    categoryProductLoading: false,
-    categoryProductErrors: undefined,
+    carts: undefined,
+    cartsLoading: false,
+    cartsErrors: undefined,
+    totalCartItems:0
 
 
 
@@ -63,6 +65,8 @@ const cartSlice : Slice<IAppInitialState> = createSlice({
             .addCase(addToCart.fulfilled, (state, action: PayloadAction<any>) => {
                 state.responseAddCartLoading = false;
                 state.responseAddCart = action.payload;
+                // state.totalCartItems += action.payload.products.reduce((total, product) => total + product.quantity, 0);
+
 
 
             })
@@ -71,18 +75,20 @@ const cartSlice : Slice<IAppInitialState> = createSlice({
                 state.responseAddCartErrors = action.payload ;
             })
 
-            .addCase(getProductByCategory.pending, (state) => {
-                state.categoryProductLoading = true;
+            .addCase(getCart.pending, (state) => {
+                state.cartsLoading = true;
             })
-            .addCase(getProductByCategory.fulfilled, (state, action: PayloadAction<any>) => {
-                state.categoryProductLoading = false;
-                state.categoryProduct = action.payload;
-
+            .addCase(getCart.fulfilled, (state, action: PayloadAction<any>) => {
+                state.cartsLoading = false;
+                state.carts = action.payload;
+                state.totalCartItems = action.payload.reduce((total, order) => {
+                    return total + order.products.reduce((orderTotal, product) => orderTotal + product.quantity, 0);
+                }, 0);
 
             })
-            .addCase(getProductByCategory.rejected, (state, action:PayloadAction<any>) => {
-                state.categoryProductLoading = false;
-                state.categoryProductErrors = action.payload ;
+            .addCase(getCart.rejected, (state, action:PayloadAction<any>) => {
+                state.cartsLoading = false;
+                state.cartsErrors = action.payload ;
             })
     },
 });

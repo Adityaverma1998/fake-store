@@ -9,3 +9,11 @@ export interface IResponseAddToCart {
     date: string;
     products: Product[];
 }
+
+export interface ICartItems {
+    id: number;
+    userId: number;
+    date: string;
+    products: Product[];
+}
+

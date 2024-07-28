@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks";
-import {addToCart} from "@/redux/carts/cartSlice";
+import {addToCart, getCart} from "@/redux/carts/cartSlice";
 import CircularLoader from "@/components/loaders/circular-loader";
 import {toast} from "react-toastify";
 import React from "react";
@@ -27,13 +27,15 @@ const ProductCard = (props: ProductCardProps) => {
         try {
             const currentTime = new Date().toISOString(); // ISO 8601 format
             const result = await dispatch(addToCart({
-                userId: 5,
+                userId: 1,
                 date: currentTime,
                 products: [{ productId: id, quantity: 1 }]
             }));
 
             // Check if the action was successful
             if (addToCart.fulfilled.match(result)) {
+                await dispatch(getCart()) ;
+
                 toast.success('Product added to cart successfully')
                 console.log('Product added to cart successfully', result.payload);
             } else if (addToCart.rejected.match(result)) {
